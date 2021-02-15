@@ -51,29 +51,33 @@ func EmoteToHtml(file, title string) string {
 	return fmt.Sprintf(`<img src="%s" class="emote" title="%s" />`, file, title)
 }
 
-// Used with a regexp.ReplaceAllStringFunc() call. Needs to lookup the value as it
-// cannot be passed in with the regex function call.
-func emoteToHmtl2(key string) string {
-	key = strings.Trim(key, ":[]")
-	if val, ok := Emotes[key]; ok {
-		return fmt.Sprintf(`<img src="%s" class="emote" title="%s" />`, val, key)
-	}
-	return key
+var valid_modifiers = map[string]string{
+	"blur":   "blur",
+	"grey":   "grayscale",
+	"gray":   "grayscale",
+	"invert": "invert",
+	"flip":   "horizontalflip",
+	"upside": "upsidedown",
+	"squish": "squished",
+	"lg": "large",
 }
 
 func ParseEmotesArray(words []string) []string {
 	newWords := []string{}
 	for _, word := range words {
-		found := false
-		if !WrappedEmotesOnly {
-			if val, ok := Emotes[word]; ok {
-				newWords = append(newWords, EmoteToHtml(val, word))
-				found = true
+		emote_name := strings.Trim(word, ":")
+		emote_modifier := ""
+
+		if mod := strings.SplitN(emote_name, "~", 2); len(mod) == 2 {
+			if class, ok := valid_modifiers[mod[1]]; ok {
+				emote_name = mod[0]
+				emote_modifier = class
 			}
 		}
 
-		if !found {
-			word = reWrappedEmotes.ReplaceAllStringFunc(word, emoteToHmtl2)
+		if filename, ok := Emotes[emote_name]; ok {
+			newWords = append(newWords, fmt.Sprintf(`<img src="%s" class="emote emote_%s" title="%s" />`, filename, emote_modifier, emote_name))
+		} else {
 			newWords = append(newWords, word)
 		}
 	}
