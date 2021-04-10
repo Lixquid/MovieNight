@@ -162,9 +162,10 @@ func (cl *Client) NewMsg(data common.ClientData) {
 			common.LogChatf("[chat] <%s> %q\n", cl.name, msg)
 
 			// Enable links for mods and admins
-			if cl.CmdLevel >= common.CmdlMod {
+			// Nah everyone can do it
+			// if cl.CmdLevel >= common.CmdlMod {
 				msg = formatLinks(msg)
-			}
+			// }
 
 			cl.Message(msg)
 		}
