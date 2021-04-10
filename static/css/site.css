@@ -483,3 +483,8 @@ input[type="text"] {
 img[src="/static/img/admin.png"] ~ .msg .emote_large {
     height: 76px;
 }
+
+.chat-image {
+    max-width: 250px;
+    max-height: 250px;
+}
