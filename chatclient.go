@@ -164,7 +164,7 @@ func (cl *Client) NewMsg(data common.ClientData) {
 			// Enable links for mods and admins
 			// Nah everyone can do it
 			// if cl.CmdLevel >= common.CmdlMod {
-				msg = formatLinks(msg)
+			msg = formatLinks(msg)
 			// }
 
 			cl.Message(msg)
