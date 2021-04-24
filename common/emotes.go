@@ -15,7 +15,7 @@ var WrappedEmotesOnly bool = false
 var (
 	reStripStatic   = regexp.MustCompile(`^(\\|/)?static`)
 	reWrappedEmotes = regexp.MustCompile(`[:\[][^\s:\/\\\?=#\]\[]+[:\]]`)
-	reImg           = regexp.MustCompile(`^https?://i\.imgur\.com/\w+\.png$`)
+	reImg           = regexp.MustCompile(`^<a href="(https?://i\.imgur\.com/\w+\.png)" target="_blank">https?://i\.imgur\.com/\w+\.png</a>$`)
 )
 
 func init() {
@@ -88,7 +88,8 @@ func ParseEmotesArray(words []string) []string {
 
 func ParseEmotes(msg string) string {
 	if reImg.MatchString(msg) {
-		return `<img src="` + msg + `" class="chat-image" />`
+		href := reImg.FindStringSubmatch(msg)[1]
+		return `<a href="` + href + `" target="_blank"><img src="` + href + `" class="chat-image" /></a>`
 	} else {
 		words := ParseEmotesArray(strings.Split(msg, " "))
 		return strings.Join(words, " ")
